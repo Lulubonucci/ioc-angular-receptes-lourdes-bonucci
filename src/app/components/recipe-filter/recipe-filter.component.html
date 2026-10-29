@@ -1,0 +1,42 @@
+<form #filterForm="ngForm" (ngSubmit)="onApplyFilter()" class="filter-form">
+  <div class="form-group">
+    <label for="searchText">Buscar por palabra o categoría:</label>
+    <input
+      type="text"
+      id="searchText"
+      name="searchText"
+      [(ngModel)]="searchText"
+      #searchCtrl="ngModel"
+      required
+      minlength="3"
+      placeholder="Escribe al menos 3 caracteres (ej. Paella, Arroces...)"
+      class="form-control"
+    />
+    @if (searchCtrl.invalid && (searchCtrl.dirty || searchCtrl.touched)) {
+      <div class="error-msg" role="alert">
+        El texto de búsqueda debe tener al menos 3 caracteres.
+      </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="category">Categoría:</label>
+    <select
+      id="category"
+      name="category"
+      [(ngModel)]="selectedCategory"
+      (change)="onApplyFilter()"
+      class="form-control"
+    >
+      <option value="">Todas las categorías</option>
+      @for (cat of categories; track cat) {
+        <option [value]="cat">{{ cat }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="button-group">
+    <button type="submit" [disabled]="filterForm.invalid" class="btn btn-primary">Filtrar</button>
+    <button type="button" (click)="onReset()" class="btn btn-secondary">Restablecer</button>
+  </div>
+</form>

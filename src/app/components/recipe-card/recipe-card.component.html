@@ -1,0 +1,13 @@
+<div class="card" (click)="onSelect()" tabindex="0" (keydown.enter)="onSelect()">
+  <div class="card-header">
+    <h3>{{ recipe.title }}</h3>
+    <app-recipe-tag [category]="recipe.category"></app-recipe-tag>
+  </div>
+  <p>{{ recipe.description }}</p>
+  <div class="card-footer">
+    <span>⏱️ {{ recipe.prepTimeMinutes }} min</span>
+    @if (recipe.featured) {
+      <span class="featured-star">⭐ Destacado</span>
+    }
+  </div>
+</div>
