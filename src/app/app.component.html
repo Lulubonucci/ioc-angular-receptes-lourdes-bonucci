@@ -1,46 +1,158 @@
-<a class="skip-link" href="#main-content">Saltar al contenido principal</a>
-<div class="main-container">
-  <header>
-    <h1>📖 Recetario Angular</h1>
+<main class="container">
+  <header class="page-header">
+    <h1>Recetas Saludables — EAC3</h1>
+    <p>Búsqueda reactiva, adaptación de modelos y persistencia con API local</p>
   </header>
 
-  <main>
-    <app-recipe-filter
-      [categories]="categories"
-      (filterChange)="onFilter($event)"
-      (resetFilter)="onResetFilter()"
-    ></app-recipe-filter>
+  @if (recipeService.error(); as errMsg) {
+    <section class="error-banner" role="alert" aria-live="assertive">
+      <p>{{ errMsg }}</p>
+      <button type="button" class="btn-retry" (click)="onRetry()">Reintentar</button>
+    </section>
+  }
 
-    <div class="content-layout">
-      <section class="list-section">
-        <h2>Listado de Recetas ({{ filteredRecipes.length }})</h2>
+  @if (postSuccessMessage(); as okMsg) {
+    <p class="status-msg" role="status" aria-live="polite">{{ okMsg }}</p>
+  }
 
-        @if (filteredRecipes.length > 0) {
-          <app-recipe-list
-            [recipes]="filteredRecipes"
-            (recipeSelected)="onSelectRecipe($event)"
-          ></app-recipe-list>
-        } @else {
-          <p class="no-results" role="status">
-            No se han encontrado recetas que coincidan con la búsqueda.
-          </p>
+  <section class="panel" aria-label="Buscar recetas">
+    <h2>Buscar y filtrar recetas</h2>
+    <form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()" class="search-form">
+      <div class="field">
+        <label for="search-term">Término de búsqueda (mín. 3 caracteres)</label>
+        <input
+          id="search-term"
+          type="text"
+          formControlName="term"
+          placeholder="Ej. avena, pollo, salmón..."
+        />
+        @if (searchForm.get('term')?.hasError('minlength') && searchForm.get('term')?.touched) {
+          <small class="field-error" role="alert">
+            Escribe al menos 3 caracteres para buscar.
+          </small>
         }
-      </section>
+        @if (searchForm.get('term')?.pending) {
+          <small class="field-pending" role="status">Comprobando coincidencias en la API...</small>
+        }
+        @if (searchForm.get('term')?.hasError('noApiMatches') && !searchForm.get('term')?.pending) {
+          <small class="field-error" role="alert">
+            No se encontraron recetas con ese término en la API.
+          </small>
+        }
+      </div>
 
-      @if (selectedRecipe) {
-        <section class="detail-section">
-          <h2>Detalle de la Receta</h2>
-          <div class="detail-card">
-            <h3>{{ selectedRecipe.title }}</h3>
-            <p><strong>Categoría:</strong> {{ selectedRecipe.category }}</p>
-            <p><strong>Descripción:</strong> {{ selectedRecipe.description }}</p>
-            <p><strong>Tiempo de preparación:</strong> {{ selectedRecipe.prepTimeMinutes }} min</p>
-            <p>
-              <strong>Fecha de creación:</strong> {{ selectedRecipe.createdAt | date: 'longDate' }}
-            </p>
-          </div>
-        </section>
+      <div class="field">
+        <label for="search-category">Categoría</label>
+        <select id="search-category" formControlName="category">
+          <option value="">Todas</option>
+          <option value="desayuno">Desayuno</option>
+          <option value="comida">Comida</option>
+          <option value="cena">Cena</option>
+          <option value="snack">Snack</option>
+          <option value="general">General</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="submit">Buscar</button>
+        <button type="button" class="btn-secondary" (click)="clearSearch()">Limpiar</button>
+      </div>
+    </form>
+
+    @if (historyService.history().length > 0) {
+      <div class="history-box">
+        <span>Historial reciente:</span>
+        <div class="history-chips">
+          @for (item of historyService.history(); track item) {
+            <button type="button" class="chip" (click)="selectFromHistory(item)">
+              {{ item }}
+            </button>
+          }
+        </div>
+        <button type="button" class="btn-clear-history" (click)="historyService.clearHistory()">
+          Borrar historial
+        </button>
+      </div>
+    }
+  </section>
+
+  <section class="panel" aria-label="Listado de recetas">
+    <h2>Listado de recetas</h2>
+
+    @if (recipeService.loading()) {
+      <p class="loading-box" role="status" aria-live="polite">Cargando recetas...</p>
+    } @else {
+      @if (recipeService.recipes().length === 0) {
+        <p role="status">No hay recetas para mostrar con los filtros actuales.</p>
+      } @else {
+        <div class="grid">
+          @for (recipe of recipeService.recipes(); track recipe.id) {
+            <article class="card">
+              <div class="card-top">
+                <span class="badge">{{ recipe.category }}</span>
+                @if (recipe.featured) {
+                  <span class="badge badge-featured">Destacada</span>
+                }
+              </div>
+              <h3>{{ recipe.title }}</h3>
+              <p>{{ recipe.description }}</p>
+              <div class="meta">
+                <span>Tiempo / kcal: {{ recipe.prepTimeMinutes }}</span>
+                <span>Dificultad: {{ recipe.difficulty }}</span>
+                <span>Fecha: {{ recipe.createdAt }}</span>
+              </div>
+            </article>
+          }
+        </div>
       }
-    </div>
-  </main>
-</div>
+    }
+  </section>
+
+  <section class="panel" aria-label="Crear nueva receta">
+    <h2>Añadir nueva receta (POST)</h2>
+    <form [formGroup]="createForm" (ngSubmit)="onCreateRecipe()" class="create-form">
+      <div class="field">
+        <label for="create-title">Título</label>
+        <input id="create-title" type="text" formControlName="title" />
+        @if (createForm.get('title')?.invalid && createForm.get('title')?.touched) {
+          <small class="field-error" role="alert">El título es obligatorio (mín. 3 letras).</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="create-description">Descripción</label>
+        <input id="create-description" type="text" formControlName="description" />
+        @if (createForm.get('description')?.invalid && createForm.get('description')?.touched) {
+          <small class="field-error" role="alert">La descripción es obligatoria (mín. 5 letras).</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="create-category">Categoría</label>
+        <select id="create-category" formControlName="category">
+          <option value="desayuno">Desayuno</option>
+          <option value="comida">Comida</option>
+          <option value="cena">Cena</option>
+          <option value="snack">Snack</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="create-minutes">Minutos / kcal</label>
+        <input id="create-minutes" type="number" formControlName="prepTimeMinutes" />
+      </div>
+
+      <div class="field">
+        <label for="create-difficulty">Dificultad</label>
+        <input id="create-difficulty" type="text" formControlName="difficulty" />
+      </div>
+
+      <div class="field-check">
+        <input id="create-featured" type="checkbox" formControlName="featured" />
+        <label for="create-featured">Marcar como destacada</label>
+      </div>
+
+      <button type="submit">Guardar receta</button>
+    </form>
+  </section>
+</main>

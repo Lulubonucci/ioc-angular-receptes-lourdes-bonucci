@@ -1,0 +1,115 @@
+{
+  "recipes": [
+    {
+      "id": "1",
+      "title": "  Tortilla de claras y avena  ",
+      "summary": "Desayuno proteico rápido sin azúcar añadido.",
+      "category": "desayuno",
+      "prepDate": "2026-11-10",
+      "difficulty": "facil",
+      "calories": "290",
+      "isFavorite": true
+    },
+    {
+      "id": "2",
+      "title": "Pollo al limón con calabacín",
+      "summary": "Comida ligera con aceite de oliva virgen extra.",
+      "category": "comida",
+      "prepDate": "2026-11-11",
+      "difficulty": "media",
+      "calories": 410,
+      "isFavorite": true
+    },
+    {
+      "id": "3",
+      "title": "  Salmón al horno con espárragos  ",
+      "summary": "Cena rica en omega-3 y verduras verdes.",
+      "category": "cena",
+      "prepDate": "2026-11-12",
+      "difficulty": "facil",
+      "calories": "460",
+      "isFavorite": false
+    },
+    {
+      "id": "4",
+      "title": "Yogur griego con almendras",
+      "summary": "Snack saciante entre horas.",
+      "category": "snack",
+      "prepDate": "2026-11-13",
+      "difficulty": "facil",
+      "calories": "210",
+      "isFavorite": true
+    },
+    {
+      "id": "5",
+      "title": "Bol de arroz integral y pavo",
+      "summary": "Plato completo para después de entrenar.",
+      "category": "comida",
+      "prepDate": "2026-11-14",
+      "difficulty": "media",
+      "calories": "480",
+      "isFavorite": false
+    },
+    {
+      "id": "6",
+      "title": "Tostadas de pan integral con aguacate",
+      "summary": "Desayuno con grasas saludables y huevo.",
+      "category": "desayuno",
+      "prepDate": "2026-11-15",
+      "difficulty": "facil",
+      "calories": "340",
+      "isFavorite": true
+    },
+    {
+      "id": "7",
+      "title": "Crema de calabaza y jengibre",
+      "summary": "Cena suave y reconfortante.",
+      "category": "cena",
+      "prepDate": "2026-11-16",
+      "difficulty": "facil",
+      "calories": "230",
+      "isFavorite": false
+    },
+    {
+      "id": "8",
+      "title": "Muffins proteicos de cacao y avena",
+      "summary": " Ideales para llevar al trabajo o estudio. ",
+      "category": "snack",
+      "prepDate": "2026-11-17",
+      "difficulty": "media",
+      "calories": "265",
+      "isFavorite": true
+    },
+    {
+      "id": "9",
+      "title": "Tilapia a la plancha con ensalada",
+      "summary": "Opción baja en calorías y alta en proteína.",
+      "category": "cena",
+      "prepDate": "2026-11-18",
+      "difficulty": "facil",
+      "calories": "310",
+      "isFavorite": false
+    },
+    {
+      "id": "10",
+      "title": "Gachas de avena con canela",
+      "summary": "Clásico desayuno caliente y nutritivo.",
+      "category": "desayuno",
+      "prepDate": "2026-11-19",
+      "difficulty": "facil",
+      "calories": "320",
+      "isFavorite": true
+    },
+    {
+      "title": "Carne",
+      "summary": "Carne mechada",
+      "category": "comida",
+      "calories": 150,
+      "difficulty": "facil",
+      "prepDate": "2026-11-24",
+      "isFavorite": false,
+      "id": "RgF0kyOhPLo"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
